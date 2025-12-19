@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Wi-Fi | MAIA10_5.G</title>
-  <meta name="description" content="Acesso rápido ao Wi-Fi via QR Code" />
+  <title>Conectar ao Wi-Fi</title>
+  <meta name="description" content="Conecte-se ao Wi-Fi escaneando o QR Code" />
 
   <style>
     :root{
@@ -15,7 +15,7 @@
       --txt:rgba(255,255,255,.92);
       --muted:rgba(255,255,255,.72);
       --shadow:0 24px 60px rgba(0,0,0,.45);
-      --radius:18px;
+      --radius:20px;
     }
     *{box-sizing:border-box}
     body{
@@ -32,101 +32,25 @@
         linear-gradient(180deg,var(--bg1),var(--bg2));
       padding:22px;
     }
-    .wrap{
-      width:min(980px,100%);
-      display:grid;
-      grid-template-columns:1.1fr .9fr;
-      gap:18px;
-    }
-    @media(max-width:860px){
-      .wrap{grid-template-columns:1fr}
-    }
     .card{
+      width:min(420px,100%);
       border:1px solid var(--stroke);
       background:var(--card);
       border-radius:var(--radius);
       box-shadow:var(--shadow);
-    }
-    .left{padding:22px}
-    .badge{
-      display:inline-flex;
-      gap:8px;
-      align-items:center;
-      padding:8px 12px;
-      border-radius:999px;
-      border:1px solid var(--stroke);
-      background:rgba(0,0,0,.16);
-      color:var(--muted);
-      font-size:13px;
+      padding:26px 22px 28px;
+      text-align:center;
     }
     h1{
-      margin:14px 0 6px;
-      font-size:clamp(22px,2.6vw,34px);
-      line-height:1.15;
-    }
-    .sub{
-      margin:0 0 16px;
-      color:var(--muted);
-      font-size:14.5px;
-    }
-    .row{
-      display:flex;
-      align-items:center;
-      justify-content:space-between;
-      gap:10px;
-      padding:12px;
-      border-radius:14px;
-      border:1px solid var(--stroke);
-      background:rgba(0,0,0,.14);
-      margin-top:12px;
-    }
-    .k{
-      display:flex;
-      flex-direction:column;
-      gap:2px;
-      min-width:0;
-    }
-    .label{
-      font-size:12px;
-      color:var(--muted);
-    }
-    .value{
-      font-size:16px;
-      font-weight:600;
-      font-family:ui-monospace,Menlo,Consolas,monospace;
-      white-space:nowrap;
-      overflow:hidden;
-      text-overflow:ellipsis;
-    }
-    .btn{
-      border:1px solid var(--stroke);
-      background:rgba(255,255,255,.08);
-      color:var(--txt);
-      padding:10px 12px;
-      border-radius:12px;
-      cursor:pointer;
-      font-weight:600;
-      font-size:13px;
-    }
-    .btn:hover{background:rgba(255,255,255,.14)}
-    .note{
-      margin-top:16px;
-      border-top:1px solid var(--stroke);
-      padding-top:14px;
-      font-size:13px;
-      color:var(--muted);
-      line-height:1.5;
-    }
-    .right{
-      padding:22px;
-      display:grid;
-      place-items:center;
-      gap:12px;
+      margin:6px 0 18px;
+      font-size:clamp(22px,5vw,28px);
     }
     .qrbox{
-      width:min(320px,92%);
+      width:100%;
+      max-width:300px;
       aspect-ratio:1/1;
-      border-radius:20px;
+      margin:0 auto 18px;
+      border-radius:18px;
       border:1px solid var(--stroke);
       background:rgba(255,255,255,.06);
       display:grid;
@@ -136,88 +60,37 @@
     .qrbox img{
       width:100%;
       height:auto;
-      border-radius:14px;
+      border-radius:12px;
     }
-    .tip{
-      text-align:center;
-      font-size:13px;
+    .instructions{
+      font-size:15px;
+      line-height:1.6;
       color:var(--muted);
     }
-    .toast{
-      position:fixed;
-      bottom:18px;
-      left:50%;
-      transform:translateX(-50%);
-      background:rgba(0,0,0,.55);
-      border:1px solid rgba(255,255,255,.16);
-      padding:10px 14px;
-      border-radius:999px;
-      font-size:13px;
-      opacity:0;
-      pointer-events:none;
-      transition:.2s;
-    }
-    .toast.show{
-      opacity:1;
-      transform:translateX(-50%) translateY(-4px);
+    .instructions b{
+      color:var(--txt);
+      font-weight:600;
     }
   </style>
 </head>
 
 <body>
-  <div class="wrap">
 
-    <!-- COLUNA ESQUERDA -->
-    <section class="card">
-      <div class="left">
-        <div class="badge">📶 Acesso Wi-Fi</div>
-        <h1>Conecte-se à rede MAIA10_5.G</h1>
-        <p class="sub">
-          Encostou no NFC? Agora é só escanear o QR Code ao lado.
-        </p>
+  <div class="card">
+    <h1>📶 Conectar ao Wi-Fi</h1>
 
-        <div class="row">
-          <div class="k">
-            <div class="label">Nome da rede (SSID)</div>
-            <div class="value" id="ssidText">MAIA10_5.G</div>
-          </div>
-          <button class="btn" onclick="copyText('MAIA10_5.G')">Copiar</button>
-        </div>
+    <div class="qrbox">
+      <img id="qrImg" alt="QR Code do Wi-Fi">
+    </div>
 
-        <div class="row">
-          <div class="k">
-            <div class="label">Senha</div>
-            <div class="value" id="passText">LARM4103</div>
-          </div>
-          <button class="btn" onclick="copyText('LARM4103')">Copiar</button>
-        </div>
-
-        <div class="note">
-          <b>Como funciona:</b><br>
-          • <b>iPhone:</b> Abra a câmera → escaneie → confirme a conexão<br>
-          • <b>Android:</b> Escaneie o QR → conectar
-        </div>
-      </div>
-    </section>
-
-    <!-- COLUNA DIREITA -->
-    <aside class="card">
-      <div class="right">
-        <div class="qrbox">
-          <img id="qrImg" alt="QR Code do Wi-Fi">
-        </div>
-        <div class="tip">
-          📱 Escaneie para conectar automaticamente ao Wi-Fi
-        </div>
-      </div>
-    </aside>
-
+    <div class="instructions">
+      <b>iPhone:</b><br>
+      Pressione o Qrcode em seguida clique em Conectar
+    </div>
   </div>
 
-  <div class="toast" id="toast">Copiado!</div>
-
   <script>
-    // ===== DADOS DA REDE =====
+    // ===== DADOS DA REDE (não exibidos na tela) =====
     const SSID = "MAIA10_5.G";
     const PASSWORD = "LARM4103";
     const AUTH = "WPA"; // WPA / WPA2 | para rede aberta: nopass
@@ -234,15 +107,7 @@
       encodeURIComponent(payload);
 
     document.getElementById("qrImg").src = qrUrl;
-
-    // Copiar texto
-    const toast = document.getElementById("toast");
-    function copyText(text){
-      navigator.clipboard.writeText(text).then(()=>{
-        toast.classList.add("show");
-        setTimeout(()=>toast.classList.remove("show"),1400);
-      });
-    }
   </script>
+
 </body>
 </html>
