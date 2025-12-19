@@ -1,0 +1,299 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Wi-Fi | MAIA10_5.G</title>
+  <meta name="description" content="Acesso rápido ao Wi-Fi via QR Code." />
+  <style>
+    :root{
+      --bg1:#070a12;
+      --bg2:#0b1226;
+      --card: rgba(255,255,255,.08);
+      --stroke: rgba(255,255,255,.14);
+      --txt: rgba(255,255,255,.92);
+      --muted: rgba(255,255,255,.72);
+      --shadow: 0 24px 60px rgba(0,0,0,.45);
+      --radius: 18px;
+    }
+    *{ box-sizing:border-box; }
+    body{
+      margin:0;
+      min-height:100vh;
+      display:grid;
+      place-items:center;
+      font-family: ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      color: var(--txt);
+      background:
+        radial-gradient(900px 600px at 10% 10%, rgba(99,102,241,.35), transparent 60%),
+        radial-gradient(900px 600px at 90% 20%, rgba(16,185,129,.28), transparent 55%),
+        radial-gradient(900px 700px at 60% 100%, rgba(244,114,182,.20), transparent 55%),
+        linear-gradient(180deg, var(--bg1), var(--bg2));
+      padding: 22px;
+    }
+    .wrap{
+      width:min(980px,100%);
+      display:grid;
+      grid-template-columns: 1.1fr .9fr;
+      gap:18px;
+    }
+    @media (max-width: 860px){
+      .wrap{ grid-template-columns: 1fr; }
+    }
+    .card{
+      border:1px solid var(--stroke);
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      overflow:hidden;
+      position:relative;
+    }
+    .card::before{
+      content:"";
+      position:absolute;
+      inset:-2px;
+      background: linear-gradient(120deg, rgba(99,102,241,.18), rgba(16,185,129,.14), rgba(244,114,182,.12));
+      filter: blur(18px);
+      z-index:0;
+      opacity:.65;
+    }
+    .card > *{ position:relative; z-index:1; }
+    .left{ padding:22px 22px 18px; }
+    .badge{
+      display:inline-flex;
+      gap:8px;
+      align-items:center;
+      padding:8px 12px;
+      border-radius:999px;
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.16);
+      color: var(--muted);
+      font-size: 13px;
+      letter-spacing:.2px;
+    }
+    h1{
+      margin:14px 0 6px;
+      font-size: clamp(22px, 2.6vw, 34px);
+      line-height:1.15;
+    }
+    .sub{
+      margin:0 0 16px;
+      color: var(--muted);
+      font-size: 14.5px;
+      line-height:1.45;
+    }
+    .grid{
+      display:grid;
+      gap:12px;
+      margin-top: 14px;
+    }
+    .row{
+      display:flex;
+      align-items:center;
+      justify-content:space-between;
+      gap:10px;
+      padding:12px 12px;
+      border-radius: 14px;
+      border:1px solid var(--stroke);
+      background: rgba(0,0,0,.14);
+    }
+    .k{
+      display:flex;
+      flex-direction:column;
+      gap:2px;
+      min-width: 0;
+    }
+    .label{
+      color: var(--muted);
+      font-size: 12px;
+    }
+    .value{
+      font-weight: 650;
+      font-size: 16px;
+      letter-spacing:.2px;
+      white-space:nowrap;
+      overflow:hidden;
+      text-overflow:ellipsis;
+      max-width: 62vw;
+    }
+    .btn{
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.08);
+      color: var(--txt);
+      padding:10px 12px;
+      border-radius: 12px;
+      cursor:pointer;
+      font-weight: 600;
+      font-size: 13px;
+      transition: transform .08s ease, background .15s ease;
+      user-select:none;
+      white-space:nowrap;
+    }
+    .btn:active{ transform: scale(.98); }
+    .btn:hover{ background: rgba(255,255,255,.12); }
+    .note{
+      margin-top: 14px;
+      border-top: 1px solid var(--stroke);
+      padding-top: 14px;
+      color: var(--muted);
+      font-size: 13px;
+      line-height:1.5;
+    }
+    .right{
+      padding: 22px;
+      display:grid;
+      place-items:center;
+      gap:12px;
+    }
+    .qrbox{
+      width: min(320px, 92%);
+      aspect-ratio: 1 / 1;
+      border-radius: 20px;
+      border:1px solid var(--stroke);
+      background: rgba(255,255,255,.06);
+      display:grid;
+      place-items:center;
+      padding: 14px;
+    }
+    #qrcode{
+      display:grid;
+      place-items:center;
+      width: 100%;
+      height: 100%;
+    }
+    .tip{
+      text-align:center;
+      color: var(--muted);
+      font-size: 13px;
+      line-height:1.5;
+      margin-top: 2px;
+    }
+    .tiny{
+      font-size: 12px;
+      color: rgba(255,255,255,.60);
+      text-align:center;
+    }
+    .toast{
+      position: fixed;
+      bottom: 18px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,.55);
+      border:1px solid rgba(255,255,255,.16);
+      color: rgba(255,255,255,.92);
+      padding: 10px 14px;
+      border-radius: 999px;
+      font-size: 13px;
+      opacity: 0;
+      pointer-events:none;
+      transition: opacity .2s ease, transform .2s ease;
+    }
+    .toast.show{
+      opacity:1;
+      transform: translateX(-50%) translateY(-4px);
+    }
+  </style>
+</head>
+
+<body>
+  <div class="wrap">
+    <section class="card">
+      <div class="left">
+        <div class="badge">📶 Acesso Wi-Fi • QR Code</div>
+        <h1>Conecte-se à rede <span style="opacity:.95">MAIA10_5.G</span></h1>
+        <p class="sub">
+          Use o QR Code ao lado para conectar rapidamente.
+          (No iPhone, a câmera abre um aviso para confirmar a conexão.)
+        </p>
+
+        <div class="grid">
+          <div class="row">
+            <div class="k">
+              <div class="label">Nome da rede (SSID)</div>
+              <div class="value" id="ssidText">MAIA10_5.G</div>
+            </div>
+            <button class="btn" id="copySsid">Copiar</button>
+          </div>
+
+          <div class="row">
+            <div class="k">
+              <div class="label">Senha</div>
+              <div class="value" id="passText">LARM4103</div>
+            </div>
+            <button class="btn" id="copyPass">Copiar</button>
+          </div>
+        </div>
+
+        <div class="note">
+          <b>Como usar:</b><br/>
+          • <b>iPhone:</b> abra o app <b>Câmera</b>, aponte para o QR, toque no banner e confirme.<br/>
+          • <b>Android:</b> aponte a câmera (ou o leitor de QR) e toque em “Conectar”.<br/>
+          <span class="tiny">Dica: se o QR não abrir, aumente o brilho da tela e tente de novo.</span>
+        </div>
+      </div>
+    </section>
+
+    <aside class="card">
+      <div class="right">
+        <div class="qrbox">
+          <div id="qrcode" aria-label="QR Code do Wi-Fi"></div>
+        </div>
+        <div class="tip">
+          📱 Escaneie o QR Code para conectar ao Wi-Fi<br/>
+          <span class="tiny" id="wifiPayloadHint"></span>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <div class="toast" id="toast">Copiado!</div>
+
+  <!-- Biblioteca de QR Code (CDN) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" integrity="sha512-CNgIhS0k4mIVv/rsqK7QpWmQYJr+o4gQxShRr8kXwYyHc2tE5oR2b3i3lqz3F9g7fD0r3v3p3QxR8QZ1Cq0mJw==" crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+
+  <script>
+    // ==== DADOS DA REDE (edite aqui se quiser) ====
+    const SSID = "MAIA10_5.G";
+    const PASSWORD = "LARM4103";
+    const AUTH = "WPA"; // WPA serve para WPA/WPA2 na maioria dos casos. (Para rede aberta: "nopass")
+
+    // Escapa caracteres especiais para o padrão WiFi QR
+    function esc(str){
+      return String(str).replace(/([\\;,:"])/g, "\\$1");
+    }
+
+    const payload = `WIFI:T:${AUTH};S:${esc(SSID)};P:${esc(PASSWORD)};;`;
+
+    // Preenche textos
+    document.getElementById("ssidText").textContent = SSID;
+    document.getElementById("passText").textContent = PASSWORD;
+    document.getElementById("wifiPayloadHint").textContent = "Formato WiFi QR padrão (NDEF/QR): " + payload;
+
+    // Gera QR
+    new QRCode(document.getElementById("qrcode"), {
+      text: payload,
+      width: 256,
+      height: 256,
+      correctLevel: QRCode.CorrectLevel.M
+    });
+
+    // Copiar para área de transferência
+    const toast = document.getElementById("toast");
+    function showToast(msg){
+      toast.textContent = msg;
+      toast.classList.add("show");
+      setTimeout(()=> toast.classList.remove("show"), 1400);
+    }
+    async function copyText(t){
+      try{
+        await navigator.clipboard.writeText(t);
+        showToast("Copiado!");
+      }catch(e){
+        showToast("Não foi possível copiar");
+      }
+    }
+    document.getElementById("copySsid").addEventListener("click", ()=> copyText(SSID));
+    document.getElementById("copyPass").addEventListener("click", ()=> copyText(PASSWORD));
+  </script>
+</body>
+</html>
